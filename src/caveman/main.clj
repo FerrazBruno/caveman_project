@@ -1,4 +1,5 @@
-(ns caveman.main)
+(ns caveman.main
+  (:require [caveman.system :as system]))
 
 (defn -main []
-  (println "Hello, Wolrd!"))
+  (system/start-system))
