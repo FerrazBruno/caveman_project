@@ -1,5 +1,7 @@
-/.clj-kondo
+/.clj-kondo/.cache
 /.cpcache
 /.lsp
 /.calva
 .nrepl-port
+.env
+data
