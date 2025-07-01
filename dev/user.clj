@@ -21,5 +21,8 @@
   (::system/server system))
 
 (defn db []
-  (:system/db system))
+  (::system/db system))
+
+(defn env []
+  (::system/env system))
 
