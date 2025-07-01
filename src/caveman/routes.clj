@@ -1,15 +1,18 @@
 (ns caveman.routes
-  (:require [clojure.tools.logging :as log]
+  (:require [caveman.system :as-alias system]
+            [clojure.tools.logging :as log]
             [hiccup2.core :as hiccup]
+            [next.jdbc :as jdbc]
             [reitit.ring :as reitit-ring]))
 
-(defn hello-handler [_system _request]
-  {:status 200
-   :headers {"Content-type" "text/html"}
-   :body (str (hiccup/html
-               [:html
-                [:body
-                 [:h1 "Hello, word"]]]))})
+(defn hello-handler [{::system/keys [db]} _request]
+  (let [{:keys [planet]} (jdbc/execute-one! db ["SELECT 'earth' as planet"])]
+    {:status 200
+     :headers {"Content-type" "text/html"}
+     :body (str (hiccup/html
+                 [:html
+                  [:body
+                   [:h1 (str "Hello, " planet)]]]))}))
 
 (defn goodbye-handler [_system _request]
   {:status 200
@@ -38,3 +41,4 @@
                   (routes system))
                  #'not-found-handler)]
     (handler request)))
+

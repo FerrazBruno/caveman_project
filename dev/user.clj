@@ -20,3 +20,6 @@
 (defn server []
   (::system/server system))
 
+(defn db []
+  (:system/db system))
+
