@@ -1,6 +1,9 @@
 (ns caveman.system
-  (:require [caveman.routes :as routes]
+  (:require [caveman.jobs :as jobs]
+            [caveman.routes :as routes]
+            [caveman.system :as system]
             [next.jdbc.connection :as connection]
+            [proletarian.worker :as worker]
             [ring.adapter.jetty :as jetty])
   (:import [com.zaxxer.hikari HikariDataSource]
            [io.github.cdimascio.dotenv Dotenv]
@@ -21,6 +24,18 @@
 (defn stop-db [db]
   (HikariDataSource/.close db))
 
+(defn start-worker [{::keys [db] :as system}]
+  (let [worker (worker/create-queue-worker
+                db
+                (partial #'jobs/process-job system)
+                {:proletarian/log #'jobs/logger
+                 :proletarian/serializer jobs/json-serializer})]
+    (worker/start! worker)
+    worker))
+
+(defn stop-worker [worker]
+  (worker/stop! worker))
+
 (defn start-server [{::keys [env] :as system}]
   (jetty/run-jetty
    (partial #'routes/route-handler system)
@@ -32,10 +47,12 @@
 
 (defn start-system []
   (let [system-so-far {::env (start-env)}
-        system-so-far (merge system-so-far {::db (start-db system-so-far)})]
+        system-so-far (merge system-so-far {::db (start-db system-so-far)})
+        system-so-far (merge system-so-far {::worker (start-worker system-so-far)})]
     (merge system-so-far {::server (start-server system-so-far)})))
 
-(defn stop-system [server]
-  (stop-server (::server server))
-  (stop-db (::db server)))
+(defn stop-system [system]
+  (stop-server (::server system))
+  (start-worker (::worker system))
+  (stop-db (::db system)))
 
