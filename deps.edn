@@ -1,6 +1,5 @@
 {:path ["src" "dev"]
- :deps {org.clojure/clojure {:mvn/version "1.12.1"}
-        ;; JSON Reading and Writing
+ :deps {;; JSON Reading and Writing
         cheshire/cheshire {:mvn/version "6.0.0"}
         ;; Dynamic SQL Generation
         com.github.seancorfield/honeysql {:mvn/version "2.7.1310"}
@@ -16,6 +15,8 @@
         metosin/reitit {:mvn/version "0.9.1"}
         ;; Background Jobs
         msolli/proletarian {:mvn/version "1.0.89-alpha"}
+        ;; Clojure
+        org.clojure/clojure {:mvn/version "1.12.1"}
         ;; Logging Facade
         org.clojure/tools.logging {:mvn/version "1.3.0"}
         ;; Postgres Driver
@@ -27,8 +28,11 @@
         ;; HTTP Server
         ring/ring {:mvn/version "1.14.2"}}
  :aliases {:dev    {:extra-paths ["dev" "test"]
-                    :extra-deps {nrepl/nrepl {:mvn/version "1.3.1"}
+                    :extra-deps {;; Clojure Network REPL
+                                 nrepl/nrepl {:mvn/version "1.3.1"}
                                  ;; Test Runner
                                  lambdaisland/kaocha {:mvn/version "1.91.1392"}}}
-           :format {:deps {dev.weavejester/cljfmt {:mvn/version "0.13.1"}}}
-           :lint   {:deps {clj-kondo/clj-kondo {:mvn/version "2025.06.05"}}}}}
+           :format {:deps {;; Clojure Formatter
+                           dev.weavejester/cljfmt {:mvn/version "0.13.1"}}}
+           :lint   {:deps {;; Clojure Linter
+                           clj-kondo/clj-kondo {:mvn/version "2025.06.05"}}}}}
