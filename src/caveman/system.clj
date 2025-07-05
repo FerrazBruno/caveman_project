@@ -37,10 +37,13 @@
   (worker/stop! worker))
 
 (defn start-server [{::keys [env] :as system}]
-  (jetty/run-jetty
-   (partial #'routes/route-handler system)
-   {:port (Long/parseLong (Dotenv/.get env "PORT"))
-    :join? false}))
+  (let [handler (if (= (Dotenv/.get env "ENVIRONMENT" "development"))
+                  (partial #'routes/root-handler system)
+                  (routes/root-handler system))]
+    (jetty/run-jetty
+     handler
+     {:port (Long/parseLong (Dotenv/.get env "PORT"))
+      :join? false})))
 
 (defn stop-server [server]
   (Server/.stop server))
