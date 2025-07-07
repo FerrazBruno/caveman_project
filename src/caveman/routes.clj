@@ -2,14 +2,15 @@
   (:require [caveman.cave.routes :as cave-routes]
             [caveman.goodbye.routes :as goodbye-routes]
             [caveman.hello.routes :as hello-routes]
+            [caveman.static.routes :as static-routes]
             [caveman.system :as-alias system]
             [clojure.tools.logging :as log]
             [hiccup2.core :as hiccup]
-            [next.jdbc :as jdbc]
             [reitit.ring :as reitit-ring]))
 
 (defn routes [system]
   [""
+   (static-routes/routes system)
    (cave-routes/routes system)
    (hello-routes/routes system)
    (goodbye-routes/routes system)])

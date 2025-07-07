@@ -1,4 +1,4 @@
-{:path ["src" "dev"]
+{:paths ["dev" "res" "src"]
  :deps {;; JSON Reading and Writing
         cheshire/cheshire {:mvn/version "6.0.0"}
         ;; Dynamic SQL Generation
