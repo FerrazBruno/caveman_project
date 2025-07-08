@@ -4,7 +4,8 @@
             [caveman.system :as system]
             [next.jdbc.connection :as connection]
             [proletarian.worker :as worker]
-            [ring.adapter.jetty :as jetty])
+            [ring.adapter.jetty :as jetty]
+            [ring.middleware.session.cookie :as session-cookie])
   (:import [com.zaxxer.hikari HikariDataSource]
            [io.github.cdimascio.dotenv Dotenv]
            [org.eclipse.jetty.server Server]))
@@ -13,6 +14,9 @@
 
 (defn start-env []
   (Dotenv/load))
+
+(defn start-cookie-store []
+  (session-cookie/cookie-store))
 
 (defn start-db [{::keys [env]}]
   (connection/->pool HikariDataSource
@@ -50,6 +54,7 @@
 
 (defn start-system []
   (let [system-so-far {::env (start-env)}
+        system-so-far (merge system-so-far {::cookie-store (start-cookie-store)})
         system-so-far (merge system-so-far {::db (start-db system-so-far)})
         system-so-far (merge system-so-far {::worker (start-worker system-so-far)})]
     (merge system-so-far {::server (start-server system-so-far)})))

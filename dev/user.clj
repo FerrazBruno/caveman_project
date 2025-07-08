@@ -26,3 +26,6 @@
 (defn env []
   (::system/env system))
 
+(defn cookie-store []
+  (::system/cookie-store system))
+
